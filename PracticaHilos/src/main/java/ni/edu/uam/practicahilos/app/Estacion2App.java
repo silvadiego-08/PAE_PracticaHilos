@@ -63,13 +63,10 @@ public class Estacion2App extends Application {
                 "Ventanilla-A"
         );
 
-        // Estado antes de iniciar el hilo
         registrarEstado(hilo);
 
-        // Iniciar el hilo
         hilo.start();
 
-        // Estado inmediatamente despues de start()
         registrarEstado(hilo);
 
         iniciarMonitor(hilo);
@@ -85,7 +82,6 @@ public class Estacion2App extends Application {
 
                 Thread.State estadoActual = hilo.getState();
 
-                // Registrar solo cuando cambia el estado
                 if (estadoActual != estadoAnterior) {
 
                     registrarEstado(hilo);
