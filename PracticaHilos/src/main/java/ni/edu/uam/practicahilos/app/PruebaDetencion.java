@@ -1,47 +1,48 @@
 package ni.edu.uam.practicahilos.app;
 
-
-import ni.edu.uam.practicahilos.task.ProcesoCancelable;
+import ni.edu.uam.practicahilos.model.EstadoProceso;
 
 public class PruebaDetencion {
+
     public static void main(String[] args)
             throws InterruptedException {
 
-        ProcesoCancelable tareaA =
-                new ProcesoCancelable("Ventanilla A", 20);
+        ControlVentanas control = new ControlVentanas();
 
-        ProcesoCancelable tareaB =
-                new ProcesoCancelable("Ventanilla B", 20);
+        System.out.println("Estado inicial: " + control.getEstado());
 
-        Thread hiloA = new Thread(tareaA, "Ventanilla-A");
-        Thread hiloB = new Thread(tareaB, "Ventanilla-B");
+        // Primera sesión: cancelación
+        System.out.println("¿Inició? " + control.iniciar());
 
-        System.out.println("En espera");
+        // Debe rechazar una segunda sesión simultánea
+        System.out.println("¿Inició otra vez? " + control.iniciar());
 
-        hiloA.start();
-        hiloB.start();
-
-        System.out.println("Ejecutando");
-
-        // Simula el tiempo antes de pulsar Detener.
         Thread.sleep(1100);
 
-        System.out.println("Deteniendo");
+        System.out.println("¿Solicitó detener? " + control.detener());
 
-        // Primero se solicita detener ambas tareas.
-        tareaA.detener();
-        tareaB.detener();
+        esperarResultado(control);
 
-        // Después se interrumpe cualquier espera en sleep().
-        hiloA.interrupt();
-        hiloB.interrupt();
+        System.out.println(
+                "Resultado de la primera sesión: " + control.getEstado()
+        );
 
-        // Se espera la terminación real de ambos hilos.
-        hiloA.join();
-        hiloB.join();
+        // Segunda sesión: finalización natural.
+        System.out.println("¿Reinició? " + control.iniciar());
 
-        System.out.println("Detenido");
-        System.out.println("¿A sigue vivo? " + hiloA.isAlive());
-        System.out.println("¿B sigue vivo? " + hiloB.isAlive());
+        esperarResultado(control);
+
+        System.out.println(
+                "Resultado de la segunda sesión: " + control.getEstado()
+        );
+    }
+
+    private static void esperarResultado(ControlVentanas control)
+            throws InterruptedException {
+
+        while (control.getEstado() == EstadoProceso.EJECUTANDO
+                || control.getEstado() == EstadoProceso.DETENIENDO) {
+            Thread.sleep(50);
+        }
     }
 }

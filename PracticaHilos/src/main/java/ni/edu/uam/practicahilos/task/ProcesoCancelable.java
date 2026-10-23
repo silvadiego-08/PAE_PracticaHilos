@@ -42,18 +42,18 @@ public class ProcesoCancelable implements Runnable {
                     return;
                 }
 
-                // Unidad de trabajo simulada.
+                // Unidad de trabajo simulada
                 System.out.println(nombre + " procesa solicitud " + i);
             }
             estado = EstadoProceso.FINALIZADO;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            System.out.println("Error al procesar el solicitud " + nombre);
+            System.out.println(nombre + ": espera interrumpida por cancelación");
         } finally {
             if (estado != EstadoProceso.FINALIZADO) {
                 estado = EstadoProceso.DETENIDO;
             }
-            System.out.println(nombre + " procesa solicitud " + estado);
+            System.out.println(nombre + ": salida de run(), estado " + estado);
         }
     }
     private boolean cancelacionSolicitada () {
